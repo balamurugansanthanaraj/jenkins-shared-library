@@ -99,7 +99,7 @@ def pipelineConfig = [
     artifactoryRepo: 'your-repo-name'
 ]
 
-pythonLibraryPipeline(pipelineConfig)
+pythonCIPipeline(pipelineConfig)
 ```
 
 ### Advanced Configuration
@@ -157,7 +157,7 @@ def pipelineConfig = [
     autoVersionBump: true
 ]
 
-pythonLibraryPipeline(pipelineConfig)
+pythonCIPipeline(pipelineConfig)
 ```
 
 ## Pipeline Stages
@@ -286,7 +286,7 @@ The shared library includes comprehensive unit tests using the Jenkins Pipeline 
 ./gradlew test
 
 # Run specific test class
-./gradlew test --tests PythonLibraryStepsTest
+./gradlew test --tests PythonStepsTest
 
 # Run with coverage
 ./gradlew test jacocoTestReport

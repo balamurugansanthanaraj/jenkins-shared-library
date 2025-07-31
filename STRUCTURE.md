@@ -7,18 +7,18 @@ This document provides an overview of the complete Jenkins Shared Library struct
 ```
 python-library-shared-lib/
 ├── vars/
-│   └── pythonLibraryPipeline.groovy    # Main pipeline entry point
+│   └── pythonCIPipeline.groovy    # Main pipeline entry point
 ├── src/
 │   └── com/
 │       └── company/
 │           └── jenkins/
-│               ├── PythonLibrarySteps.groovy      # Core Python pipeline steps
+│               ├── PythonSteps.groovy      # Core Python pipeline steps
 │               ├── SonarQubeIntegration.groovy    # SonarQube code quality integration
 │               ├── NexusIQIntegration.groovy      # Nexus IQ security scanning
 │               ├── ArtifactoryIntegration.groovy  # JFrog Artifactory upload
 │               └── GitOperations.groovy           # Safe Git operations
 ├── test/
-│   └── PythonLibraryStepsTest.groovy   # Unit tests for pipeline steps
+│   └── PythonStepsTest.groovy   # Unit tests for pipeline steps
 ├── Jenkinsfile                          # Sample Jenkinsfile for usage
 ├── build.gradle                         # Gradle build configuration
 ├── .ruff.toml                          # Ruff linting configuration
@@ -30,7 +30,7 @@ python-library-shared-lib/
 
 ### Core Pipeline Files
 
-#### `vars/pythonLibraryPipeline.groovy`
+#### `vars/pythonCIPipeline.groovy`
 - **Purpose**: Main pipeline entry point that orchestrates all CI steps
 - **Features**: 
   - Configurable pipeline with sensible defaults
@@ -38,7 +38,7 @@ python-library-shared-lib/
   - Conditional stage execution based on configuration
   - Comprehensive error handling and notifications
 
-#### `src/com/company/jenkins/PythonLibrarySteps.groovy`
+#### `src/com/company/jenkins/PythonSteps.groovy`
 - **Purpose**: Core Python development pipeline steps
 - **Features**:
   - Source code checkout
@@ -89,7 +89,7 @@ python-library-shared-lib/
 
 ### Testing and Build Files
 
-#### `test/PythonLibraryStepsTest.groovy`
+#### `test/PythonStepsTest.groovy`
 - **Purpose**: Unit tests for pipeline steps
 - **Features**:
   - Comprehensive test coverage
@@ -181,7 +181,7 @@ def pipelineConfig = [
     artifactoryRepo: 'python-libs'
 ]
 
-pythonLibraryPipeline(pipelineConfig)
+pythonCIPipeline(pipelineConfig)
 ```
 
 ## Pipeline Stages

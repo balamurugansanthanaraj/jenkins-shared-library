@@ -14,7 +14,7 @@
  */
 def call(Map config = [:]) {
     // Import required classes
-    def pythonSteps = new com.company.jenkins.PythonLibrarySteps(this)
+    def pythonSteps = new com.company.jenkins.PythonSteps(this)
     def sonarQube = new com.company.jenkins.SonarQubeIntegration(this)
     def nexusIQ = new com.company.jenkins.NexusIQIntegration(this)
     def artifactory = new com.company.jenkins.ArtifactoryIntegration(this)
@@ -25,10 +25,7 @@ def call(Map config = [:]) {
         // Agent configuration
         agentLabel: 'python-agent',
         
-        // Repository configuration
-        repoUrl: env.GIT_URL ?: '',
-        branch: env.BRANCH_NAME ?: env.GIT_BRANCH ?: 'main',
-        prTitle: env.CHANGE_TITLE ?: '',
+
         
         // Python configuration
         pythonVersion: '3.11',
@@ -38,8 +35,6 @@ def call(Map config = [:]) {
         
         // Tool configurations
         ruffConfig: '.ruff.toml',
-        testCommand: 'python -m pytest',
-        coverageCommand: 'python -m pytest --cov=. --cov-report=xml',
         
         // SonarQube configuration
         sonarProjectKey: 'python-library',
@@ -104,7 +99,7 @@ def call(Map config = [:]) {
             
             stage('Version Bump') {
                 when {
-                    expression { config.autoVersionBump && config.prTitle }
+                    expression { config.autoVersionBump && env.CHANGE_TITLE }
                 }
                 steps {
                     script {

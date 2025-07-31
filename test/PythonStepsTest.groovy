@@ -1,20 +1,20 @@
-import com.company.jenkins.PythonLibrarySteps
+import com.company.jenkins.PythonSteps
 import com.lesfurets.jenkins.unit.BasePipelineTest
 import org.junit.Before
 import org.junit.Test
 import static org.junit.Assert.*
 
 /**
- * Unit tests for PythonLibrarySteps class
+ * Unit tests for PythonSteps class
  */
-class PythonLibraryStepsTest extends BasePipelineTest {
+class PythonStepsTest extends BasePipelineTest {
     
-    PythonLibrarySteps steps
+    PythonSteps steps
     
     @Before
     void setUp() {
         super.setUp()
-        steps = new PythonLibrarySteps(this)
+        steps = new PythonSteps(this)
     }
     
     @Test

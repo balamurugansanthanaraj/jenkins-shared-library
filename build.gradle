@@ -188,7 +188,7 @@ task validateStructure {
     
     doLast {
         def requiredDirs = ['vars', 'src']
-        def requiredFiles = ['vars/pythonLibraryPipeline.groovy']
+        def requiredFiles = ['vars/pythonCIPipeline.groovy']
         
         requiredDirs.each { dir ->
             if (!file(dir).exists()) {

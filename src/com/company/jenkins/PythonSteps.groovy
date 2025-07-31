@@ -1,16 +1,16 @@
 package com.company.jenkins
 
 /**
- * Python Library Pipeline Steps
+ * Python Pipeline Steps
  * 
- * Contains all the individual step functions for the Python library CI pipeline
+ * Contains all the individual step functions for the Python CI pipeline
  */
-class PythonLibrarySteps implements Serializable {
+class PythonSteps implements Serializable {
     def script
     def env
     def currentBuild
     
-    PythonLibrarySteps(script) {
+    PythonSteps(script) {
         this.script = script
         this.env = script.env
         this.currentBuild = script.currentBuild
@@ -20,24 +20,18 @@ class PythonLibrarySteps implements Serializable {
      * Checkout source code from repository
      */
     def checkoutSourceCode(Map config) {
-        script.echo "Checking out source code from ${config.repoUrl}"
+        script.echo "Checking out source code from multi-branch pipeline"
         
-        script.checkout([
-            $class: 'GitSCM',
-            branches: [[name: "*/${config.branch}"]],
-            doGenerateSubmoduleConfigurations: false,
-            extensions: [
-                [$class: 'CleanBeforeCheckout'],
-                [$class: 'SubmoduleOption', disableSubmodules: false, recursiveSubmodules: true, trackingSubmodules: false]
-            ],
-            submoduleCfg: [],
-            userRemoteConfigs: [[
-                credentialsId: 'git-credentials',
-                url: config.repoUrl
-            ]]
-        ])
+        // In multi-branch pipeline, checkout is already done by Jenkins
+        // Just verify we have the source code
+        script.sh """
+            echo "Current branch: \${BRANCH_NAME:-GIT_BRANCH}"
+            echo "Repository URL: \${GIT_URL}"
+            echo "Working directory: \$(pwd)"
+            ls -la
+        """
         
-        script.echo "Successfully checked out branch: ${config.branch}"
+        script.echo "Source code checkout verified"
     }
     
     /**
@@ -76,14 +70,15 @@ class PythonLibrarySteps implements Serializable {
      * Bump version based on PR title
      */
     def bumpVersion(Map config) {
-        script.echo "Bumping version based on PR title: ${config.prTitle}"
+        def prTitle = env.CHANGE_TITLE ?: ''
+        script.echo "Bumping version based on PR title: ${prTitle}"
         
-        if (!config.prTitle) {
+        if (!prTitle) {
             script.echo "No PR title found, skipping version bump"
             return
         }
         
-        def versionBumpType = determineVersionBumpType(config.prTitle)
+        def versionBumpType = determineVersionBumpType(prTitle)
         if (!versionBumpType) {
             script.echo "No version bump type determined from PR title"
             return
@@ -260,7 +255,7 @@ print(str(new))
             source venv/bin/activate
             
             # Run tests with coverage
-            ${config.coverageCommand}
+            python -m pytest --cov=. --cov-report=xml --cov-report=html
             
             # Generate coverage report
             coverage report

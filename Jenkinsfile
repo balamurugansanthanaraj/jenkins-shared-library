@@ -59,4 +59,4 @@ def pipelineConfig = [
 ]
 
 // Run the pipeline
-pythonLibraryPipeline(pipelineConfig) 
+pythonCIPipeline(pipelineConfig) 
