@@ -1,0 +1,83 @@
+# Ruff configuration file
+# This file configures Ruff for Python linting and formatting
+
+# Target Python version
+target-version = "py311"
+
+# Line length for formatting
+line-length = 88
+
+# Indent width
+indent-width = 4
+
+# Quote style for strings
+quote-style = "double"
+
+# Import sorting
+[lint.isort]
+force-single-line = false
+known-first-party = ["src"]
+section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]
+
+# Flake8 configuration
+[lint.flake8]
+max-line-length = 88
+extend-ignore = [
+    "E203",  # whitespace before ':'
+    "E501",  # line too long (handled by line-length)
+    "W503",  # line break before binary operator
+]
+
+# Pycodestyle configuration
+[lint.pycodestyle]
+max-line-length = 88
+ignore = [
+    "E203",  # whitespace before ':'
+    "E501",  # line too long (handled by line-length)
+    "W503",  # line break before binary operator
+]
+
+# Pyflakes configuration
+[lint.pyflakes]
+extend-ignore = []
+
+# Mypy configuration
+[lint.mypy]
+ignore-missing-imports = true
+disallow-untyped-defs = false
+disallow-incomplete-defs = false
+check-untyped-defs = false
+disallow-untyped-decorators = false
+no-implicit-optional = false
+warn-redundant-casts = false
+warn-unused-ignores = false
+warn-return-any = false
+warn-unreachable = false
+strict-equality = false
+
+# Pydocstyle configuration
+[lint.pydocstyle]
+convention = "google"
+
+# Per-file rule configurations
+[lint.per-file-ignores]
+"__init__.py" = ["F401"]
+"tests/**/*.py" = ["S101", "PLR2004"]
+"**/migrations/**/*.py" = ["E501"]
+
+# Format configuration
+[format]
+# Use double quotes for strings
+quote-style = "double"
+
+# Use spaces around operators
+skip-magic-trailing-comma = false
+
+# Respect existing line endings
+line-ending = "auto"
+
+# Organize imports
+[lint.isort]
+force-single-line = false
+known-first-party = ["src"]
+section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"] 

@@ -1,0 +1,210 @@
+plugins {
+    id 'groovy'
+    id 'java'
+    id 'jacoco'
+    id 'maven-publish'
+}
+
+group = 'com.company.jenkins'
+version = '1.0.0'
+
+repositories {
+    mavenCentral()
+    maven { url 'https://repo.jenkins-ci.org/public/' }
+}
+
+dependencies {
+    // Jenkins Pipeline Unit testing framework
+    testImplementation 'com.lesfurets:jenkins-pipeline-unit:1.13'
+    
+    // JUnit for testing
+    testImplementation 'junit:junit:4.13.2'
+    
+    // Groovy for testing
+    testImplementation 'org.codehaus.groovy:groovy-all:3.0.9'
+    
+    // Mockito for mocking
+    testImplementation 'org.mockito:mockito-core:4.5.1'
+    
+    // JSON processing
+    testImplementation 'com.fasterxml.jackson.core:jackson-databind:2.13.4'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+groovy {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+test {
+    useJUnit()
+    
+    // Set system properties for testing
+    systemProperty 'jenkins.test.timeout', '300'
+    
+    // Test reports
+    reports {
+        html.required = true
+        junitXml.required = true
+    }
+    
+    // Test logging
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+        exceptionFormat = 'full'
+    }
+}
+
+jacoco {
+    toolVersion = '0.8.8'
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = true
+        html.required = true
+        csv.required = false
+    }
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.8
+            }
+        }
+        rule {
+            limit {
+                counter = 'BRANCH'
+                value = 'COVEREDRATIO'
+                minimum = 0.7
+            }
+        }
+    }
+}
+
+// Ensure test coverage verification runs after tests
+test.finalizedBy jacocoTestReport
+test.finalizedBy jacocoTestCoverageVerification
+
+// Custom task to run all quality checks
+task qualityCheck {
+    dependsOn test, jacocoTestReport, jacocoTestCoverageVerification
+    description = 'Runs all quality checks including tests and coverage'
+}
+
+// Custom task to build the shared library
+task buildSharedLibrary {
+    dependsOn test
+    description = 'Builds the Jenkins Shared Library'
+    
+    doLast {
+        println "Shared Library built successfully!"
+        println "Version: ${version}"
+        println "Group: ${group}"
+    }
+}
+
+// Publishing configuration
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+            
+            groupId = group
+            artifactId = 'python-library-shared-lib'
+            version = version
+            
+            pom {
+                name = 'Python Library Shared Library'
+                description = 'Jenkins Shared Library for Python Library CI Pipeline'
+                url = 'https://github.com/company/python-library-shared-lib'
+                
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://opensource.org/licenses/MIT'
+                    }
+                }
+                
+                developers {
+                    developer {
+                        id = 'jenkins-team'
+                        name = 'Jenkins Team'
+                        email = 'jenkins@company.com'
+                    }
+                }
+            }
+        }
+    }
+    
+    repositories {
+        maven {
+            name = 'artifactory'
+            url = project.hasProperty('artifactoryUrl') ? project.artifactoryUrl : 'https://artifactory.company.com/artifactory/libs-release-local'
+            
+            credentials {
+                username = project.hasProperty('artifactoryUser') ? project.artifactoryUser : ''
+                password = project.hasProperty('artifactoryPassword') ? project.artifactoryPassword : ''
+            }
+        }
+    }
+}
+
+// Custom task to create shared library distribution
+task createDistribution(type: Zip) {
+    dependsOn test
+    description = 'Creates a distribution package for the shared library'
+    
+    archiveBaseName = 'python-library-shared-lib'
+    archiveVersion = version
+    
+    from('.') {
+        include 'vars/**'
+        include 'src/**'
+        include 'resources/**'
+        include 'README.md'
+        include 'LICENSE'
+        exclude 'build/**'
+        exclude '.gradle/**'
+        exclude '.git/**'
+        exclude '*.iml'
+        exclude '.idea/**'
+    }
+    
+    destinationDirectory = file("${buildDir}/distributions")
+}
+
+// Task to validate shared library structure
+task validateStructure {
+    description = 'Validates the shared library structure'
+    
+    doLast {
+        def requiredDirs = ['vars', 'src']
+        def requiredFiles = ['vars/pythonLibraryPipeline.groovy']
+        
+        requiredDirs.each { dir ->
+            if (!file(dir).exists()) {
+                throw new GradleException("Required directory '${dir}' does not exist")
+            }
+        }
+        
+        requiredFiles.each { file ->
+            if (!file(file).exists()) {
+                throw new GradleException("Required file '${file}' does not exist")
+            }
+        }
+        
+        println "Shared library structure validation passed!"
+    }
+}
+
+// Make validateStructure run before build
+build.dependsOn validateStructure 
