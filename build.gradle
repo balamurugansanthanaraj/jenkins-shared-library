@@ -188,7 +188,11 @@ task validateStructure {
     
     doLast {
         def requiredDirs = ['vars', 'src']
-        def requiredFiles = ['vars/pythonCIPipeline.groovy']
+        def requiredFiles = [
+    'vars/pythonCIPipeline.groovy',
+    'src/com/company/jenkins/ConfigLoader.groovy',
+    'resources/common-config.yml'
+]
         
         requiredDirs.each { dir ->
             if (!file(dir).exists()) {

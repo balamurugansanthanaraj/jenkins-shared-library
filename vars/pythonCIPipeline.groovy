@@ -19,52 +19,23 @@ def call(Map config = [:]) {
     def nexusIQ = new com.company.jenkins.NexusIQIntegration(this)
     def artifactory = new com.company.jenkins.ArtifactoryIntegration(this)
     def gitOps = new com.company.jenkins.GitOperations(this)
+    def configLoader = new com.company.jenkins.ConfigLoader(this)
     
-    // Set default configuration
-    def defaultConfig = [
-        // Agent configuration
-        agentLabel: 'python-agent',
-        
-
-        
-        // Python configuration
-        pythonVersion: '3.11',
-        requirementsFile: 'requirements.txt',
-        setupFile: 'setup.py',
-        versionFile: 'version.txt',
-        
-        // Tool configurations
-        ruffConfig: '.ruff.toml',
-        
-        // SonarQube configuration
-        sonarProjectKey: 'python-library',
-        sonarHostUrl: 'http://sonarqube:9000',
+    // Get environment from config or default to production
+    def environment = config.environment ?: 'production'
+    
+    // Load default configuration from YAML file
+    def defaultConfig = configLoader.getCompleteDefaults(environment)
+    
+    // Add environment-specific tokens and credentials
+    defaultConfig.putAll([
         sonarToken: env.SONAR_TOKEN ?: '',
-        
-        // Nexus IQ configuration
-        nexusIqUrl: 'http://nexus-iq:8070',
         nexusIqToken: env.NEXUS_IQ_TOKEN ?: '',
-        nexusIqApplicationId: 'python-library',
-        
-        // Artifactory configuration
-        artifactoryUrl: 'https://artifactory.company.com',
-        artifactoryRepo: 'python-libs',
         artifactoryUser: env.ARTIFACTORY_USER ?: '',
-        artifactoryPassword: env.ARTIFACTORY_PASSWORD ?: '',
-        
-        // Git configuration
-        gitUser: env.GIT_USER ?: 'jenkins',
-        gitEmail: env.GIT_EMAIL ?: 'jenkins@company.com',
-        
-        // Pipeline behavior
-        enableMutationTests: true,
-        enableSonarQube: true,
-        enableNexusIQ: true,
-        enableArtifactory: true,
-        autoVersionBump: true
-    ]
+        artifactoryPassword: env.ARTIFACTORY_PASSWORD ?: ''
+    ])
     
-    // Merge provided config with defaults
+    // Merge provided config with defaults (user config takes precedence)
     config = defaultConfig + config
     
     // Initialize pipeline

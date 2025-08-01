@@ -1,0 +1,250 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sample-python-lib"
+dynamic = ["version"]
+description = "A sample Python library demonstrating Jenkins CI/CD pipeline usage"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Sample Team", email = "team@company.com"}
+]
+maintainers = [
+    {name = "Sample Team", email = "team@company.com"}
+]
+keywords = ["python", "library", "jenkins", "ci-cd", "pipeline"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Testing",
+    "Topic :: System :: Logging",
+    "Topic :: Text Processing :: General",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "requests>=2.28.0",
+    "pyyaml>=6.0",
+    "click>=8.0.0",
+    "structlog>=23.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "pytest-mock>=3.10.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
+    "black>=23.0.0",
+    "isort>=5.0.0",
+    "mutmut>=3.0.0",
+    "pre-commit>=3.0.0",
+    "tox>=4.0.0",
+]
+docs = [
+    "sphinx>=6.0.0",
+    "sphinx-rtd-theme>=1.2.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/company/sample-python-lib"
+Documentation = "https://github.com/company/sample-python-lib#readme"
+Repository = "https://github.com/company/sample-python-lib"
+Issues = "https://github.com/company/sample-python-lib/issues"
+Changelog = "https://github.com/company/sample-python-lib/blob/main/CHANGELOG.md"
+
+[project.scripts]
+sample-lib = "sample_python_lib.cli:main"
+
+[project.gui-scripts]
+sample-lib-gui = "sample_python_lib.cli:main"
+
+[tool.setuptools.dynamic]
+version = {file = "version.txt"}
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["sample_python_lib*"]
+
+[tool.setuptools.package-data]
+"sample_python_lib" = ["*.txt", "*.md", "*.yml", "*.yaml"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+select = ["ALL"]
+ignore = [
+    "D100",  # Missing docstring in public module
+    "D101",  # Missing docstring in public class
+    "D102",  # Missing docstring in public method
+    "D103",  # Missing docstring in public function
+    "D104",  # Missing docstring in public package
+    "D105",  # Missing docstring in magic method
+    "D106",  # Missing docstring in public nested class
+    "D107",  # Missing docstring in __init__
+    "D200",  # One-line docstring should fit on one line
+    "D201",  # No blank lines allowed before function docstring
+    "D202",  # No blank lines allowed after function docstring
+    "D203",  # 1 blank line required before class docstring
+    "D204",  # 1 blank line required after class docstring
+    "D205",  # 1 blank line required between summary line and description
+    "D206",  # Docstring should be indented with spaces, not tabs
+    "D207",  # Docstring is under-indented
+    "D208",  # Docstring is over-indented
+    "D209",  # Multi-line docstring closing quotes should be on a separate line
+    "D210",  # No whitespaces allowed surrounding docstring text
+    "D211",  # No blank lines allowed before class docstring
+    "D212",  # Multi-line docstring summary should start at the first line
+    "D213",  # Multi-line docstring summary should start at the second line
+    "D214",  # Section is over-indented
+    "D215",  # Section underline is over-indented
+    "D300",  # Use """triple double quotes"""
+    "D301",  # Use r""" if any backslashes in a docstring
+    "D400",  # First line should end with a period
+    "D401",  # First line should be in imperative mood
+    "D402",  # First line should not be the function's "signature"
+    "D403",  # First word of the first line should be properly capitalized
+    "D404",  # First word of the docstring should not be "This"
+    "D405",  # Section name should be properly capitalized
+    "D406",  # Section name should end with a newline
+    "D407",  # Missing dashed underline after section
+    "D408",  # Section underline should be in the line following the section's name
+    "D409",  # Section underline should match the length of its name
+    "D410",  # Missing blank line after section
+    "D411",  # Missing blank line before section
+    "D412",  # No blank lines allowed between a section header and its content
+    "D413",  # Missing blank line after last section
+    "D414",  # Section has no content
+    "D415",  # First line should end with a period, question mark, or exclamation point
+    "D416",  # Section name should end with a colon
+    "D417",  # Missing argument descriptions in the docstring
+    "D418",  # Missing type annotations for the function arguments
+    "D419",  # First line should be in imperative mood; try rephrasing
+    "E501",  # Line too long
+    "W503",  # Line break before binary operator
+    "W504",  # Line break after binary operator
+]
+fixable = ["ALL"]
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q --strict-markers --strict-config"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+]
+
+[tool.coverage.run]
+source = ["sample_python_lib"]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "*/__pycache__/*",
+    "*/venv/*",
+    "*/.venv/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+
+[tool.mutmut]
+paths_to_mutate = ["sample_python_lib/"]
+backup = false
+runner = "python -m pytest"
+tests_dir = "tests/"
+dict_synonyms = ["Struct", "NamedStruct"]
+
+[tool.black]
+target-version = ['py311']
+line-length = 88
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["sample_python_lib"]
+known_third_party = ["click", "structlog", "pytest", "ruff", "mypy"] 

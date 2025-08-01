@@ -1,0 +1,64 @@
+# Common Infrastructure Configuration
+# This file contains shared infrastructure URLs and default configurations
+# for Jenkins shared libraries
+
+infrastructure:
+  sonarqube:
+    host_url: "http://sonarqube.company.com:9000"
+  
+  nexus_iq:
+    host_url: "http://nexus-iq.company.com:8070"
+  
+  artifactory:
+    host_url: "https://artifactory.company.com"
+
+# Default pipeline configurations
+defaults:
+  agent:
+    label: "python-agent"
+  
+  python:
+    version: "3.11"
+    requirements_file: "requirements.txt"
+    setup_file: "setup.py"
+    version_file: "version.txt"
+  
+  tools:
+    ruff_config: ".ruff.toml"
+  
+  git:
+    user: "jenkins"
+    email: "jenkins@company.com"
+  
+  pipeline:
+    enable_mutation_tests: true
+    enable_sonarqube: true
+    enable_nexus_iq: true
+    enable_artifactory: true
+    auto_version_bump: true
+
+# Environment-specific overrides
+environments:
+  development:
+    sonarqube:
+      host_url: "http://sonarqube-dev.company.com:9000"
+    nexus_iq:
+      host_url: "http://nexus-iq-dev.company.com:8070"
+    artifactory:
+      host_url: "https://artifactory-dev.company.com"
+  
+  staging:
+    sonarqube:
+      host_url: "http://sonarqube-staging.company.com:9000"
+    nexus_iq:
+      host_url: "http://nexus-iq-staging.company.com:8070"
+    artifactory:
+      host_url: "https://artifactory-staging.company.com"
+  
+  production:
+    sonarqube:
+      host_url: "http://sonarqube.company.com:9000"
+    nexus_iq:
+      host_url: "http://nexus-iq.company.com:8070"
+    artifactory:
+      host_url: "https://artifactory.company.com" 

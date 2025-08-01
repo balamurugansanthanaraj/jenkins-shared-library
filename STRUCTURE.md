@@ -16,7 +16,10 @@ python-library-shared-lib/
 │               ├── SonarQubeIntegration.groovy    # SonarQube code quality integration
 │               ├── NexusIQIntegration.groovy      # Nexus IQ security scanning
 │               ├── ArtifactoryIntegration.groovy  # JFrog Artifactory upload
-│               └── GitOperations.groovy           # Safe Git operations
+│               ├── GitOperations.groovy           # Safe Git operations
+│               └── ConfigLoader.groovy            # YAML configuration loader
+├── resources/
+│   └── common-config.yml           # Common infrastructure configuration
 ├── test/
 │   └── PythonStepsTest.groovy   # Unit tests for pipeline steps
 ├── Jenkinsfile                          # Sample Jenkinsfile for usage
@@ -87,6 +90,15 @@ python-library-shared-lib/
   - Git tagging
   - Release notes creation
 
+#### `src/com/company/jenkins/ConfigLoader.groovy`
+- **Purpose**: YAML configuration loader for shared infrastructure settings
+- **Features**:
+  - Loads common configuration from YAML files
+  - Environment-specific configuration overrides
+  - Infrastructure URL management
+  - Default configuration provision
+  - Configuration caching for performance
+
 ### Testing and Build Files
 
 #### `test/PythonStepsTest.groovy`
@@ -107,6 +119,15 @@ python-library-shared-lib/
   - Structure validation
 
 ### Configuration Files
+
+#### `resources/common-config.yml`
+- **Purpose**: Common infrastructure and default configuration
+- **Features**:
+  - Infrastructure URLs (SonarQube, Nexus IQ, Artifactory)
+  - Environment-specific overrides (development, staging, production)
+  - Default pipeline configurations
+  - Project-specific defaults
+  - Centralized configuration management
 
 #### `.ruff.toml`
 - **Purpose**: Ruff linting and formatting configuration
@@ -175,10 +196,10 @@ python-library-shared-lib/
 @Library('python-library-shared-lib') _
 
 def pipelineConfig = [
-    agentLabel: 'python-agent',  // Configurable agent label
-    sonarProjectKey: 'my-python-lib',
-    nexusIqApplicationId: 'my-python-lib',
-    artifactoryRepo: 'python-libs'
+    environment: 'production'  // Environment configuration
+    
+    // Note: sonarProjectKey, nexusIqApplicationId, and artifactoryRepo are automatically
+    // set to the repository name (e.g., 'my-python-lib')
 ]
 
 pythonCIPipeline(pipelineConfig)

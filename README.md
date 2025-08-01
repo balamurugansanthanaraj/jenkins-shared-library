@@ -77,7 +77,35 @@ GIT_USER=jenkins
 GIT_EMAIL=jenkins@company.com
 ```
 
-### 4. Credentials Setup
+### 4. Configuration File
+
+The shared library uses a centralized configuration file (`resources/common-config.yml`) that contains:
+
+- **Infrastructure URLs**: SonarQube, Nexus IQ, and Artifactory server URLs
+- **Environment-specific overrides**: Different URLs for development, staging, and production
+- **Default configurations**: Common settings for Python version, tools, and pipeline behavior
+
+You can customize this file to match your infrastructure setup:
+
+```yaml
+infrastructure:
+  sonarqube:
+    host_url: "http://your-sonarqube.company.com:9000"
+  nexus_iq:
+    host_url: "http://your-nexus-iq.company.com:8070"
+  artifactory:
+    host_url: "https://your-artifactory.company.com"
+
+environments:
+  development:
+    sonarqube:
+      host_url: "http://sonarqube-dev.company.com:9000"
+  production:
+    sonarqube:
+      host_url: "http://sonarqube.company.com:9000"
+```
+
+### 5. Credentials Setup
 
 Configure the following credentials in Jenkins:
 - `git-credentials`: Git repository credentials
@@ -93,14 +121,32 @@ Create a `Jenkinsfile` in your Python library project:
 
 @Library('python-library-shared-lib') _
 
-def pipelineConfig = [
-    sonarProjectKey: 'your-project-name',
-    nexusIqApplicationId: 'your-application-id',
-    artifactoryRepo: 'your-repo-name'
-]
+// Minimal configuration - everything else is auto-detected
+def pipelineConfig = [:]
 
 pythonCIPipeline(pipelineConfig)
 ```
+
+**Note**: 
+- Infrastructure URLs (SonarQube, Nexus IQ, Artifactory) are automatically loaded from the shared library's configuration file
+- Project keys and IDs (`sonarProjectKey`, `nexusIqApplicationId`, `artifactoryRepo`) are automatically set to your repository name
+- You can override any of these values by providing them in the config if needed
+
+### Auto-Detection Logic
+
+The pipeline automatically detects your repository name and uses it for project configurations:
+
+1. **Repository Name Detection**: 
+   - Primary: Extracts from `GIT_URL` environment variable (e.g., `https://github.com/company/my-python-lib.git` → `my-python-lib`)
+   - Fallback: Uses workspace name if `GIT_URL` is not available
+   - Final fallback: Uses `python-library` as default
+
+2. **Automatic Configuration**:
+   - `sonarProjectKey` = repository name
+   - `nexusIqApplicationId` = repository name  
+   - `artifactoryRepo` = repository name
+
+3. **Override Capability**: You can still override any of these values in your pipeline configuration if needed.
 
 ### Advanced Configuration
 
@@ -110,13 +156,11 @@ pythonCIPipeline(pipelineConfig)
 @Library('python-library-shared-lib') _
 
 def pipelineConfig = [
+    // Environment configuration
+    environment: 'production',  // Options: 'development', 'staging', 'production'
+    
     // Agent configuration
     agentLabel: 'python-agent',  // Can be customized: 'docker-agent', 'ubuntu-agent', etc.
-    
-    // Repository configuration
-    repoUrl: 'https://github.com/company/python-library.git',
-    branch: env.BRANCH_NAME ?: env.GIT_BRANCH ?: 'main',
-    prTitle: env.CHANGE_TITLE ?: '',
     
     // Python configuration
     pythonVersion: '3.11',
@@ -126,28 +170,16 @@ def pipelineConfig = [
     
     // Tool configurations
     ruffConfig: '.ruff.toml',
-    testCommand: 'python -m pytest',
-    coverageCommand: 'python -m pytest --cov=. --cov-report=xml',
     
-    // SonarQube configuration
-    sonarProjectKey: 'python-library',
-    sonarHostUrl: 'http://sonarqube.company.com:9000',
-    sonarToken: env.SONAR_TOKEN ?: '',
+    // Override project-specific configuration if needed
+    // sonarProjectKey: 'custom-project-key',      // Auto-detected from repo name
+    // nexusIqApplicationId: 'custom-app-id',      // Auto-detected from repo name
+    // artifactoryRepo: 'custom-repo',             // Auto-detected from repo name
     
-    // Nexus IQ configuration
-    nexusIqUrl: 'http://nexus-iq.company.com:8070',
-    nexusIqToken: env.NEXUS_IQ_TOKEN ?: '',
-    nexusIqApplicationId: 'python-library',
-    
-    // Artifactory configuration
-    artifactoryUrl: 'https://artifactory.company.com',
-    artifactoryRepo: 'python-libs',
-    artifactoryUser: env.ARTIFACTORY_USER ?: '',
-    artifactoryPassword: env.ARTIFACTORY_PASSWORD ?: '',
-    
-    // Git configuration
-    gitUser: env.GIT_USER ?: 'jenkins',
-    gitEmail: env.GIT_EMAIL ?: 'jenkins@company.com',
+    // Override infrastructure URLs if needed
+    sonarHostUrl: 'http://custom-sonarqube.company.com:9000',
+    nexusIqUrl: 'http://custom-nexus-iq.company.com:8070',
+    artifactoryUrl: 'https://custom-artifactory.company.com',
     
     // Pipeline behavior
     enableMutationTests: true,
@@ -248,19 +280,22 @@ pythonCIPipeline(pipelineConfig)
 - `testCommand`: Test command (default: 'python -m pytest')
 - `coverageCommand`: Coverage command (default: 'python -m pytest --cov=. --cov-report=xml')
 
+### Environment Configuration
+- `environment`: Environment to use (default: 'production', options: 'development', 'staging', 'production')
+
 ### SonarQube Configuration
-- `sonarProjectKey`: SonarQube project key
-- `sonarHostUrl`: SonarQube server URL
+- `sonarHostUrl`: SonarQube server URL (auto-loaded from config, can be overridden)
+- `sonarProjectKey`: SonarQube project key (auto-detected from repository name, can be overridden)
 - `sonarToken`: SonarQube authentication token
 
 ### Nexus IQ Configuration
-- `nexusIqUrl`: Nexus IQ server URL
+- `nexusIqUrl`: Nexus IQ server URL (auto-loaded from config, can be overridden)
 - `nexusIqToken`: Nexus IQ authentication token
-- `nexusIqApplicationId`: Nexus IQ application ID
+- `nexusIqApplicationId`: Nexus IQ application ID (auto-detected from repository name, can be overridden)
 
 ### Artifactory Configuration
-- `artifactoryUrl`: Artifactory server URL
-- `artifactoryRepo`: Artifactory repository name
+- `artifactoryUrl`: Artifactory server URL (auto-loaded from config, can be overridden)
+- `artifactoryRepo`: Artifactory repository name (auto-detected from repository name, can be overridden)
 - `artifactoryUser`: Artifactory username
 - `artifactoryPassword`: Artifactory password
 
