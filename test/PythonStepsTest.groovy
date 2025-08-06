@@ -85,40 +85,62 @@ class PythonStepsTest extends BasePipelineTest {
     @Test
     void testBumpVersionWithValidPRTitle() {
         def config = [
-            prTitle: 'feature-add-new-api',
             versionFile: 'version.txt',
             setupFile: 'setup.py'
         ]
-        
+
+        // Provide PR title through environment
+        steps.env.CHANGE_TITLE = 'feature-add-new-api'
+
         // Mock file operations
         helper.registerAllowedMethod('sh', [Map.class], { args ->
-            if (args.script.contains('cat version.txt')) {
+            if (args.returnStdout && args.script.contains('cat version.txt')) {
                 return '1.2.3'
             }
             return 0
         })
-        
+
         steps.bumpVersion(config)
-        
-        // Verify version bump logic was executed
-        assertEquals(2, helper.callStack.findAll { call ->
-            call.methodName == 'sh'
-        }.size())
+
+        // Verify version bump logic was executed and NEW_VERSION is set
+        assertEquals('1.2.3', steps.env.NEW_VERSION)
     }
-    
+
     @Test
     void testBumpVersionWithNoPRTitle() {
         def config = [
-            prTitle: '',
             versionFile: 'version.txt'
         ]
-        
+
+        // Explicitly clear PR title
+        steps.env.CHANGE_TITLE = ''
+
         steps.bumpVersion(config)
-        
+
         // Verify no shell commands were executed for version bump
         assertEquals(0, helper.callStack.findAll { call ->
             call.methodName == 'sh'
         }.size())
+    }
+
+    @Test
+    void testBumpVersionWithSetupFileOnly() {
+        def config = [
+            setupFile: 'setup.py'
+        ]
+
+        steps.env.CHANGE_TITLE = 'feature-new-api'
+
+        helper.registerAllowedMethod('sh', [Map.class], { args ->
+            if (args.returnStdout && args.script.contains("python -c")) {
+                return '2.0.0'
+            }
+            return 0
+        })
+
+        steps.bumpVersion(config)
+
+        assertEquals('2.0.0', steps.env.NEW_VERSION)
     }
     
     @Test

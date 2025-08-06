@@ -35,9 +35,15 @@ java {
     targetCompatibility = JavaVersion.VERSION_11
 }
 
-groovy {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+sourceSets {
+    test {
+        groovy.srcDirs = ['test']
+    }
+}
+
+tasks.withType(org.gradle.api.tasks.compile.GroovyCompile).configureEach {
+    sourceCompatibility = JavaVersion.VERSION_11.toString()
+    targetCompatibility = JavaVersion.VERSION_11.toString()
 }
 
 test {
