@@ -192,11 +192,13 @@ class ArtifactoryIntegration implements Serializable {
         def version = env.NEW_VERSION ?: '1.0.0'
         def targetPath = "${config.sonarProjectKey}/${version}"
         
+        def storageUrl = "${config.artifactoryUrl}/artifactory/api/storage/${repoInfo.repository}/${targetPath}"
+        
         def verificationResult = script.sh(
             script: """
-                curl -s -H "X-JFrog-Art-Api: ${config.artifactoryPassword}" \
-                    "${config.artifactoryUrl}/artifactory/api/storage/${repoInfo.repository}/${targetPath}" | \
-                    jq -r '.children[]?.uri' | grep -E '\\\\.(tar\\\\.gz|whl)$'
+                curl -s -H "X-JFrog-Art-Api: ${config.artifactoryPassword}" \\
+                    "${storageUrl}" | \\
+                    jq -r '.children[]?.uri' | grep -E '\\\\.(tar\\\\.gz|whl)$$'
             """,
             returnStdout: true
         ).trim()
