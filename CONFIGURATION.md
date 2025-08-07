@@ -66,6 +66,9 @@ pythonCIPipeline(pipelineConfig)
 - `enableArtifactory`: Enable Artifactory upload (default: true)
 - `autoVersionBump`: Enable automatic version bumping (default: true)
 
+### Custom Environment Variables
+- `environmentVariables`: Map of custom environment variables to set in the pipeline (optional)
+
 ## Configuration Examples
 
 ### Minimal Configuration
@@ -116,10 +119,22 @@ def pipelineConfig = [
 ]
 ```
 
+### Custom Environment Variables
+```groovy
+def pipelineConfig = [
+    // Custom environment variables for your pipeline
+    environmentVariables: [
+        'BUILD_ENV': 'production',
+        'CUSTOM_API_URL': 'https://api.company.com',
+        'DEBUG_MODE': 'false',
+        'FEATURE_FLAG_X': 'enabled'
+    ]
+]
+```
+
 ### Disable Specific Features
 ```groovy
 def pipelineConfig = [
-    environment: 'production',
     enableMutationTests: false,    // Disable mutation testing
     enableSonarQube: false,        // Disable SonarQube analysis
     enableNexusIQ: false,          // Disable Nexus IQ scanning

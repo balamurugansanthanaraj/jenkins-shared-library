@@ -43,7 +43,7 @@ def call(Map config = [:]) {
         }
         
         environment {
-            // Set environment variables
+            // Default environment variables
             PYTHON_VERSION = config.pythonVersion
             PIP_CACHE_DIR = '/tmp/pip-cache'
             PYTHONPATH = "${WORKSPACE}"
@@ -61,6 +61,14 @@ def call(Map config = [:]) {
             stage('Setup Environment') {
                 steps {
                     script {
+                        // Set custom environment variables if provided
+                        if (config.environmentVariables) {
+                            config.environmentVariables.each { key, value ->
+                                env."${key}" = value
+                                echo "Set custom environment variable: ${key}=${value}"
+                            }
+                        }
+                        
                         pythonSteps.setupPythonEnvironment(config)
                     }
                 }

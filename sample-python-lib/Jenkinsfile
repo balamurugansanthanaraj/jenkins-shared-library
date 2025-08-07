@@ -4,15 +4,12 @@
  * Jenkinsfile for Sample Python Library
  * 
  * This demonstrates how to use the Python Library Shared Library
- * with minimal configuration - most settings are auto-detected.
  */
 
 @Library('python-library-shared-lib') _
 
 // Minimal configuration - everything else is auto-detected
 def pipelineConfig = [
-    environment: 'production'  // Options: 'development', 'staging', 'production'
-    
     // Note: The following are automatically detected from repository name:
     // - sonarProjectKey: 'sample-python-lib'
     // - nexusIqApplicationId: 'sample-python-lib'
