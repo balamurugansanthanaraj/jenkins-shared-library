@@ -26,7 +26,7 @@ def call(Map config = [:]) {
     def environment = config.environment ?: 'production'
     
     // Load default configuration from YAML file
-    def defaultConfig = configLoader.getCompleteDefaults(environment)
+    def defaultConfig = configLoader.getCompleteDefaults()
     
     // Add environment-specific tokens and credentials
     defaultConfig.putAll([

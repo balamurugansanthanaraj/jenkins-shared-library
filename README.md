@@ -92,8 +92,7 @@ UV_CACHE_DIR=/tmp/uv-cache  # Optional: Custom cache directory
 
 The shared library uses a centralized configuration file (`resources/common-config.yml`) that contains:
 
-- **Infrastructure URLs**: SonarQube, Nexus IQ, and Artifactory server URLs
-- **Environment-specific overrides**: Different URLs for development, staging, and production
+- **Infrastructure URLs**: SonarQube, Nexus IQ, and Artifactory server URLs (always production)
 - **Default configurations**: Common settings for Python version, tools, and pipeline behavior
 
 You can customize this file to match your infrastructure setup:
@@ -106,14 +105,6 @@ infrastructure:
     host_url: "http://your-nexus-iq.company.com:8070"
   artifactory:
     host_url: "https://your-artifactory.company.com"
-
-environments:
-  development:
-    sonarqube:
-      host_url: "http://sonarqube-dev.company.com:9000"
-  production:
-    sonarqube:
-      host_url: "http://sonarqube.company.com:9000"
 ```
 
 ### 5. Multi-Branch Pipeline Setup

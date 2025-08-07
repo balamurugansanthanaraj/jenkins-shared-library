@@ -35,13 +35,13 @@ class ConfigLoader implements Serializable {
     }
     
     /**
-     * Get infrastructure URLs with environment override support
+     * Get infrastructure URLs (always production)
      */
-    def getInfrastructureUrls(String environment = null) {
+    def getInfrastructureUrls() {
         def config = loadConfig()
         def urls = [:]
         
-        // Get base infrastructure URLs
+        // Always use production infrastructure URLs
         if (config.infrastructure) {
             if (config.infrastructure.sonarqube) {
                 urls.sonarHostUrl = config.infrastructure.sonarqube.host_url
@@ -51,21 +51,6 @@ class ConfigLoader implements Serializable {
             }
             if (config.infrastructure.artifactory) {
                 urls.artifactoryUrl = config.infrastructure.artifactory.host_url
-            }
-        }
-        
-        // Apply environment-specific overrides
-        if (environment && config.environments && config.environments[environment]) {
-            def envConfig = config.environments[environment]
-            
-            if (envConfig.sonarqube && envConfig.sonarqube.host_url) {
-                urls.sonarHostUrl = envConfig.sonarqube.host_url
-            }
-            if (envConfig.nexus_iq && envConfig.nexus_iq.host_url) {
-                urls.nexusIqUrl = envConfig.nexus_iq.host_url
-            }
-            if (envConfig.artifactory && envConfig.artifactory.host_url) {
-                urls.artifactoryUrl = envConfig.artifactory.host_url
             }
         }
         
@@ -166,9 +151,9 @@ class ConfigLoader implements Serializable {
     /**
      * Get complete default configuration including infrastructure URLs
      */
-    def getCompleteDefaults(String environment = null) {
+    def getCompleteDefaults() {
         def defaults = getDefaults()
-        def urls = getInfrastructureUrls(environment)
+        def urls = getInfrastructureUrls()
         def projectConfig = getDefaultProjectConfig()
         
         // Merge all configurations

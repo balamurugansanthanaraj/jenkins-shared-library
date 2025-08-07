@@ -134,8 +134,7 @@ python-library-shared-lib/
 #### `resources/common-config.yml`
 - **Purpose**: Common infrastructure and default configuration
 - **Features**:
-  - Infrastructure URLs (SonarQube, Nexus IQ, Artifactory)
-  - Environment-specific overrides (development, staging, production)
+  - Infrastructure URLs (SonarQube, Nexus IQ, Artifactory) - always production
   - Default pipeline configurations
   - Project-specific defaults
   - Centralized configuration management

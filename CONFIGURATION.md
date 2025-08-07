@@ -184,7 +184,7 @@ The pipeline automatically detects and sets several configuration values:
 - `artifactoryRepo` = repository name
 
 ### Infrastructure URLs
-- **Auto-loaded**: From `resources/common-config.yml` based on environment
+- **Auto-loaded**: From `resources/common-config.yml` (always production URLs)
 - **Override capability**: You can still override any of these values in your pipeline configuration
 
 ## Environment Variables
