@@ -15,6 +15,7 @@
 def call(Map config = [:]) {
     // Import required classes
     def pythonSteps = new com.company.jenkins.PythonSteps(this)
+    def pipelineSteps = new com.company.jenkins.PipelineSteps(this)
     def sonarQube = new com.company.jenkins.SonarQubeIntegration(this)
     def nexusIQ = new com.company.jenkins.NexusIQIntegration(this)
     def artifactory = new com.company.jenkins.ArtifactoryIntegration(this)
@@ -55,7 +56,7 @@ def call(Map config = [:]) {
             stage('Checkout') {
                 steps {
                     script {
-                        pythonSteps.checkoutSourceCode(config)
+                        pipelineSteps.checkoutSourceCode(config)
                     }
                 }
             }
@@ -170,17 +171,17 @@ def call(Map config = [:]) {
         post {
             always {
                 script {
-                    pythonSteps.cleanup(config)
+                    pipelineSteps.cleanup(config)
                 }
             }
             success {
                 script {
-                    pythonSteps.notifySuccess(config)
+                    pipelineSteps.notifySuccess(config)
                 }
             }
             failure {
                 script {
-                    pythonSteps.notifyFailure(config)
+                    pipelineSteps.notifyFailure(config)
                 }
             }
         }

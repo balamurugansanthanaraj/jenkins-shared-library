@@ -25,6 +25,7 @@ defaults:
   
   tools:
     ruff_config: ".ruff.toml"
+    uv_config: "pyproject.toml"  # uv uses pyproject.toml for configuration
   
   git:
     user: "jenkins"

@@ -16,31 +16,15 @@ class PythonSteps implements Serializable {
         this.currentBuild = script.currentBuild
     }
     
-    /**
-     * Checkout source code from repository
-     */
-    def checkoutSourceCode(Map config) {
-        script.echo "Checking out source code from multi-branch pipeline"
-        
-        // In multi-branch pipeline, checkout is already done by Jenkins
-        // Just verify we have the source code
-        script.sh """
-            echo "Current branch: \${BRANCH_NAME:-GIT_BRANCH}"
-            echo "Repository URL: \${GIT_URL}"
-            echo "Working directory: \$(pwd)"
-            ls -la
-        """
-        
-        script.echo "Source code checkout verified"
-    }
+
     
     /**
      * Setup Python environment
      */
     def setupPythonEnvironment(Map config) {
-        script.echo "Setting up Python environment with version ${config.pythonVersion}"
+        script.echo "Setting up Python environment with version ${config.pythonVersion} using uv"
         
-        // Use pyenv or conda to manage Python versions
+        // Use pyenv or conda to manage Python versions, then uv for package management
         script.sh """
             # Install Python version if not available
             if ! command -v python${config.pythonVersion} &> /dev/null; then
@@ -51,19 +35,23 @@ class PythonSteps implements Serializable {
             # Set Python version
             pyenv local ${config.pythonVersion} || conda activate py${config.pythonVersion}
             
-            # Upgrade pip
-            python -m pip install --upgrade pip
+            # Install uv if not available
+            if ! command -v uv &> /dev/null; then
+                echo "Installing uv package manager"
+                curl -LsSf https://astral.sh/uv/install.sh | sh
+                export PATH="\$HOME/.cargo/bin:\$PATH"
+            fi
             
-            # Create virtual environment
-            python -m venv venv
+            # Create virtual environment using uv
+            uv venv venv --python python${config.pythonVersion}
             source venv/bin/activate
             
-            # Verify Python version
+            # Verify Python version and uv
             python --version
-            pip --version
+            uv --version
         """
         
-        script.echo "Python environment setup complete"
+        script.echo "Python environment setup complete with uv"
     }
     
     /**
@@ -163,34 +151,34 @@ print(str(new))
      * Install Python dependencies
      */
     def installDependencies(Map config) {
-        script.echo "Installing Python dependencies"
+        script.echo "Installing Python dependencies using uv"
         
         script.sh """
             source venv/bin/activate
             
             # Install dependencies from requirements file
             if [ -f "${config.requirementsFile}" ]; then
-                pip install -r ${config.requirementsFile}
+                uv pip install -r ${config.requirementsFile}
             fi
             
             # Install development dependencies
             if [ -f "requirements-dev.txt" ]; then
-                pip install -r requirements-dev.txt
+                uv pip install -r requirements-dev.txt
             fi
             
             # Install test dependencies
-            pip install pytest pytest-cov ruff mutmut
+            uv pip install pytest pytest-cov ruff mutmut
             
             # Install package in editable mode
             if [ -f "${config.setupFile}" ]; then
-                pip install -e .
+                uv pip install -e .
             fi
             
             # List installed packages
-            pip list
+            uv pip list
         """
         
-        script.echo "Dependencies installed successfully"
+        script.echo "Dependencies installed successfully using uv"
     }
     
     /**
@@ -304,39 +292,5 @@ print(str(new))
         script.echo "Mutation tests completed"
     }
     
-    /**
-     * Cleanup after pipeline execution
-     */
-    def cleanup(Map config) {
-        script.echo "Performing cleanup"
-        
-        script.sh """
-            # Clean up virtual environment
-            rm -rf venv/
-            
-            # Clean up build artifacts
-            rm -rf build/ dist/ *.egg-info/
-            
-            # Clean up cache
-            rm -rf .pytest_cache/ .ruff_cache/ .mutmut-cache/
-        """
-        
-        script.echo "Cleanup completed"
-    }
-    
-    /**
-     * Send success notification
-     */
-    def notifySuccess(Map config) {
-        script.echo "Pipeline completed successfully"
-        // Add notification logic here (email, Slack, etc.)
-    }
-    
-    /**
-     * Send failure notification
-     */
-    def notifyFailure(Map config) {
-        script.echo "Pipeline failed"
-        // Add notification logic here (email, Slack, etc.)
-    }
+
 } 

@@ -4,6 +4,13 @@ A comprehensive Jenkins Shared Library that provides a complete CI/CD pipeline f
 
 ## Features
 
+### ⚡ Ultra-Fast Package Management with uv
+- **Lightning-fast installation**: uv is 10-100x faster than pip
+- **Intelligent dependency resolution**: Advanced resolver with better conflict handling
+- **Built-in virtual environments**: Native venv creation and management
+- **Compatible with existing workflows**: Works with requirements.txt and setup.py
+- **Rust-based performance**: Written in Rust for maximum speed and reliability
+
 ### 🔄 Automated Version Management
 - **Semantic Versioning**: Automatically bumps version based on PR title prefixes
   - `fix-*` → Patch version increment (1.0.0 → 1.0.1)
@@ -17,6 +24,7 @@ A comprehensive Jenkins Shared Library that provides a complete CI/CD pipeline f
 - **Unit Testing**: pytest with coverage reporting
 - **Mutation Testing**: Mutmut for test quality validation
 - **Python Environment Management**: Virtual environment setup with pyenv/conda support
+- **uv Package Manager**: Ultra-fast Python package installer and resolver
 
 ### 🔍 Code Quality & Security
 - **SonarQube Integration**: Code quality analysis with branch-specific reporting
@@ -75,6 +83,9 @@ ARTIFACTORY_PASSWORD=your_artifactory_password
 # Git (optional, defaults provided)
 GIT_USER=jenkins
 GIT_EMAIL=jenkins@company.com
+
+# uv Package Manager (optional, will auto-install if not available)
+UV_CACHE_DIR=/tmp/uv-cache  # Optional: Custom cache directory
 ```
 
 ### 4. Configuration File
@@ -105,10 +116,19 @@ environments:
       host_url: "http://sonarqube.company.com:9000"
 ```
 
-### 5. Credentials Setup
+### 5. Multi-Branch Pipeline Setup
 
-Configure the following credentials in Jenkins:
-- `git-credentials`: Git repository credentials
+This shared library is designed for **Multi-Branch Pipeline** jobs in Jenkins:
+
+1. **Create a Multi-Branch Pipeline job** in Jenkins
+2. **Configure the branch source** (GitHub, GitLab, Bitbucket, etc.)
+3. **Set the Jenkinsfile path** to point to your project's Jenkinsfile
+4. **Configure credentials** for your Git repository if needed
+
+The pipeline will automatically:
+- Detect and build all branches/PRs
+- Use the appropriate branch name and repository URL
+- Handle checkout automatically for each branch
 
 ## Usage
 
@@ -126,6 +146,8 @@ def pipelineConfig = [:]
 
 pythonCIPipeline(pipelineConfig)
 ```
+
+**Note**: See the `USAGE.md` file for detailed usage instructions and examples.
 
 **Note**: 
 - Infrastructure URLs (SonarQube, Nexus IQ, Artifactory) are automatically loaded from the shared library's configuration file
@@ -200,8 +222,8 @@ pythonCIPipeline(pipelineConfig)
 
 ### 2. Setup Environment
 - Sets up Python environment using pyenv or conda
-- Creates virtual environment
-- Upgrades pip and installs basic tools
+- Creates virtual environment using uv
+- Installs uv package manager if not available
 
 ### 3. Version Bump (Conditional)
 - Only runs when PR title is available
@@ -209,10 +231,10 @@ pythonCIPipeline(pipelineConfig)
 - Updates version files automatically
 
 ### 4. Install Dependencies
-- Installs requirements from `requirements.txt`
-- Installs development dependencies from `requirements-dev.txt`
-- Installs test dependencies (pytest, ruff, mutmut)
-- Installs package in editable mode
+- Installs requirements from `requirements.txt` using uv
+- Installs development dependencies from `requirements-dev.txt` using uv
+- Installs test dependencies (pytest, ruff, mutmut) using uv
+- Installs package in editable mode using uv
 
 ### 5. Build Package
 - Cleans previous builds
@@ -265,8 +287,7 @@ pythonCIPipeline(pipelineConfig)
 - `agentLabel`: Jenkins agent label to run the pipeline on (default: 'python-agent')
 
 ### Repository Configuration
-- `repoUrl`: Git repository URL
-- `branch`: Branch name (auto-detected from environment)
+- `branch`: Branch name (auto-detected from environment in multi-branch pipelines)
 - `prTitle`: Pull request title for version bumping
 
 ### Python Configuration
@@ -277,6 +298,7 @@ pythonCIPipeline(pipelineConfig)
 
 ### Tool Configurations
 - `ruffConfig`: Ruff configuration file (default: '.ruff.toml')
+- `uvConfig`: uv configuration file (default: 'pyproject.toml')
 - `testCommand`: Test command (default: 'python -m pytest')
 - `coverageCommand`: Coverage command (default: 'python -m pytest --cov=. --cov-report=xml')
 

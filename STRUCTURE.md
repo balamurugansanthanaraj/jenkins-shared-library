@@ -13,6 +13,7 @@ python-library-shared-lib/
 │       └── company/
 │           └── jenkins/
 │               ├── PythonSteps.groovy      # Core Python pipeline steps
+│               ├── PipelineSteps.groovy    # Language-agnostic pipeline operations
 │               ├── SonarQubeIntegration.groovy    # SonarQube code quality integration
 │               ├── NexusIQIntegration.groovy      # Nexus IQ security scanning
 │               ├── ArtifactoryIntegration.groovy  # JFrog Artifactory upload
@@ -22,7 +23,7 @@ python-library-shared-lib/
 │   └── common-config.yml           # Common infrastructure configuration
 ├── test/
 │   └── PythonStepsTest.groovy   # Unit tests for pipeline steps
-├── Jenkinsfile                          # Sample Jenkinsfile for usage
+
 ├── build.gradle                         # Gradle build configuration
 ├── .ruff.toml                          # Ruff linting configuration
 ├── README.md                           # Comprehensive documentation
@@ -44,7 +45,6 @@ python-library-shared-lib/
 #### `src/com/company/jenkins/PythonSteps.groovy`
 - **Purpose**: Core Python development pipeline steps
 - **Features**:
-  - Source code checkout
   - Python environment setup with pyenv/conda
   - Automated version bumping based on PR titles
   - Dependency installation
@@ -52,7 +52,16 @@ python-library-shared-lib/
   - Ruff linting
   - Unit testing with coverage
   - Mutation testing with Mutmut
-  - Cleanup operations
+
+#### `src/com/company/jenkins/PipelineSteps.groovy`
+- **Purpose**: Language-agnostic pipeline operations
+- **Features**:
+  - Source code checkout and verification
+  - Pipeline cleanup and artifact management
+  - Success and failure notifications
+  - Configuration validation
+  - Environment setup
+  - Extensible notification system (Slack, email, etc.)
 
 #### `src/com/company/jenkins/SonarQubeIntegration.groovy`
 - **Purpose**: SonarQube code quality analysis integration
@@ -138,12 +147,7 @@ python-library-shared-lib/
   - Multiple linter configurations
   - Per-file rule overrides
 
-#### `Jenkinsfile`
-- **Purpose**: Sample usage of the shared library
-- **Features**:
-  - Complete configuration example
-  - Environment variable usage
-  - Best practices demonstration
+
 
 ### Documentation
 
