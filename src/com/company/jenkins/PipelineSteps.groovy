@@ -148,19 +148,8 @@ class PipelineSteps implements Serializable {
     def validateConfig(Map config) {
         script.echo "Validating pipeline configuration"
         
-        // Check required fields
-        def requiredFields = ['environment']
-        def missingFields = requiredFields.findAll { !config.containsKey(it) }
-        
-        if (missingFields) {
-            script.error "Missing required configuration fields: ${missingFields.join(', ')}"
-        }
-        
-        // Validate environment
-        def validEnvironments = ['development', 'staging', 'production']
-        if (!validEnvironments.contains(config.environment)) {
-            script.error "Invalid environment: ${config.environment}. Must be one of: ${validEnvironments.join(', ')}"
-        }
+        // Configuration validation - currently no required fields
+        // Future validations can be added here as needed
         
         script.echo "Configuration validation passed"
     }
@@ -175,8 +164,7 @@ class PipelineSteps implements Serializable {
         config.agentLabel = config.agentLabel ?: 'python-agent'
         config.enableNotifications = config.enableNotifications ?: false
         
-        // Set environment-specific variables
-        script.env.PIPELINE_ENVIRONMENT = config.environment
+        // Set pipeline variables
         script.env.PIPELINE_AGENT = config.agentLabel
         
         script.echo "Pipeline environment setup completed"

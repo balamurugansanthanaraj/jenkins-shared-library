@@ -210,7 +210,7 @@ python-library-shared-lib/
 @Library('python-library-shared-lib') _
 
 def pipelineConfig = [
-    environment: 'production'  // Environment configuration
+
     
     // Note: sonarProjectKey, nexusIqApplicationId, and artifactoryRepo are automatically
     // set to the repository name (e.g., 'my-python-lib')

@@ -22,13 +22,10 @@ def call(Map config = [:]) {
     def gitOps = new com.company.jenkins.GitOperations(this)
     def configLoader = new com.company.jenkins.ConfigLoader(this)
     
-    // Get environment from config or default to production
-    def environment = config.environment ?: 'production'
-    
     // Load default configuration from YAML file
     def defaultConfig = configLoader.getCompleteDefaults()
     
-    // Add environment-specific tokens and credentials
+    // Add authentication tokens and credentials
     defaultConfig.putAll([
         sonarToken: env.SONAR_TOKEN ?: '',
         nexusIqToken: env.NEXUS_IQ_TOKEN ?: '',

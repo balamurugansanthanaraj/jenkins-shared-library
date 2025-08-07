@@ -168,7 +168,7 @@ The project uses minimal configuration - most settings are auto-detected:
 @Library('python-library-shared-lib') _
 
 def pipelineConfig = [
-    environment: 'production'
+
 ]
 
 pythonCIPipeline(pipelineConfig)

@@ -12,7 +12,7 @@ Edit the `Jenkinsfile` and customize the `pipelineConfig`:
 
 ```groovy
 def pipelineConfig = [
-    environment: 'production',  // Your environment
+
     pythonVersion: '3.11',     // Your Python version
     // ... other configurations
 ]

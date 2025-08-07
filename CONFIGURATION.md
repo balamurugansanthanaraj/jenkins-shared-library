@@ -36,9 +36,8 @@ pythonCIPipeline(pipelineConfig)
 - `uvConfig`: uv configuration file (default: 'pyproject.toml')
 - `testCommand`: Test command (default: 'python -m pytest')
 - `coverageCommand`: Coverage command (default: 'python -m pytest --cov=. --cov-report=xml')
-
-### Environment Configuration
-- `environment`: Environment to use (default: 'production', options: 'development', 'staging', 'production')
+- `lintCommand`: Lint command (default: 'ruff .')
+- `formatCommand`: Format command (default: 'black .')
 
 ### SonarQube Configuration
 - `sonarHostUrl`: SonarQube server URL (auto-loaded from config, can be overridden)

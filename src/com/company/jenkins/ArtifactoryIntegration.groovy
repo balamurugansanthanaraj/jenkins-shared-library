@@ -196,7 +196,7 @@ class ArtifactoryIntegration implements Serializable {
             script: """
                 curl -s -H "X-JFrog-Art-Api: ${config.artifactoryPassword}" \
                     "${config.artifactoryUrl}/artifactory/api/storage/${repoInfo.repository}/${targetPath}" | \
-                    jq -r '.children[]?.uri' | grep -E '\\.(tar\\.gz|whl)$'
+                    jq -r '.children[]?.uri' | grep -E '\\\\.(tar\\\\.gz|whl)$'
             """,
             returnStdout: true
         ).trim()

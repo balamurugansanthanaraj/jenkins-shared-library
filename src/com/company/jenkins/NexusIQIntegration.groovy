@@ -229,7 +229,7 @@ class NexusIQIntegration implements Serializable {
             script: """
                 curl -s -H "Authorization: Bearer ${config.nexusIqToken}" \
                     "${config.nexusIqUrl}/api/v2/applications/${config.nexusIqApplicationId}/reports" | \
-                    jq -r '.reports[] | "\(.reportTime): \(.policyAction)"' | head -10
+                    jq -r '.reports[] | "\\(.reportTime): \\(.policyAction)"' | head -10
             """,
             returnStdout: true
         ).trim()

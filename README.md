@@ -169,8 +169,7 @@ The pipeline automatically detects your repository name and uses it for project 
 @Library('python-library-shared-lib') _
 
 def pipelineConfig = [
-    // Environment configuration
-    environment: 'production',  // Options: 'development', 'staging', 'production'
+
     
     // Agent configuration
     agentLabel: 'python-agent',  // Can be customized: 'docker-agent', 'ubuntu-agent', etc.

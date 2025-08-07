@@ -230,7 +230,7 @@ class SonarQubeIntegration implements Serializable {
     def getQualityGateDetails(Map config) {
         def response = script.sh(
             script: """
-                curl -s -u ${config.sonarToken}: "${config.sonarHostUrl}/api/qualitygates/project_status?projectKey=${config.sonarProjectKey}" | jq -r '.projectStatus.conditions[] | "\(.metricKey): \(.status) (\(.actualValue)/\(.errorThreshold))"'
+                curl -s -u ${config.sonarToken}: "${config.sonarHostUrl}/api/qualitygates/project_status?projectKey=${config.sonarProjectKey}" | jq -r '.projectStatus.conditions[] | "\\(.metricKey): \\(.status) (\\(.actualValue)/\\(.errorThreshold))"'
             """,
             returnStdout: true
         ).trim()
