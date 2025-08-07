@@ -27,6 +27,8 @@ python-library-shared-lib/
 ├── build.gradle                         # Gradle build configuration
 ├── .ruff.toml                          # Ruff linting configuration
 ├── README.md                           # Comprehensive documentation
+├── CONFIGURATION.md                    # Configuration options reference
+├── USAGE.md                           # Usage guide
 └── STRUCTURE.md                        # This file
 ```
 
@@ -156,9 +158,18 @@ python-library-shared-lib/
 - **Features**:
   - Installation instructions
   - Usage examples
-  - Configuration options
+  - Overview of configuration options
   - Troubleshooting guide
   - Best practices
+
+#### `CONFIGURATION.md`
+- **Purpose**: Detailed configuration options reference
+- **Features**:
+  - Complete list of all configuration options
+  - Configuration examples for different scenarios
+  - Auto-detection features documentation
+  - Environment variables reference
+  - Configuration troubleshooting guide
 
 ## Key Features Implemented
 

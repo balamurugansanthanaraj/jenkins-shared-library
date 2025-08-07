@@ -283,54 +283,25 @@ pythonCIPipeline(pipelineConfig)
 
 ## Configuration Options
 
-### Agent Configuration
-- `agentLabel`: Jenkins agent label to run the pipeline on (default: 'python-agent')
+For a comprehensive reference of all available configuration options, see [CONFIGURATION.md](CONFIGURATION.md).
 
-### Repository Configuration
-- `branch`: Branch name (auto-detected from environment in multi-branch pipelines)
-- `prTitle`: Pull request title for version bumping
+The pipeline supports extensive configuration through a configuration map with sensible defaults. You can start with minimal configuration:
 
-### Python Configuration
-- `pythonVersion`: Python version to use (default: '3.11')
-- `requirementsFile`: Requirements file path (default: 'requirements.txt')
-- `setupFile`: Setup.py file path (default: 'setup.py')
-- `versionFile`: Version file path (default: 'version.txt')
+```groovy
+def pipelineConfig = [
+    environment: 'production'  // Minimal configuration
+]
 
-### Tool Configurations
-- `ruffConfig`: Ruff configuration file (default: '.ruff.toml')
-- `uvConfig`: uv configuration file (default: 'pyproject.toml')
-- `testCommand`: Test command (default: 'python -m pytest')
-- `coverageCommand`: Coverage command (default: 'python -m pytest --cov=. --cov-report=xml')
+pythonCIPipeline(pipelineConfig)
+```
 
-### Environment Configuration
-- `environment`: Environment to use (default: 'production', options: 'development', 'staging', 'production')
-
-### SonarQube Configuration
-- `sonarHostUrl`: SonarQube server URL (auto-loaded from config, can be overridden)
-- `sonarProjectKey`: SonarQube project key (auto-detected from repository name, can be overridden)
-- `sonarToken`: SonarQube authentication token
-
-### Nexus IQ Configuration
-- `nexusIqUrl`: Nexus IQ server URL (auto-loaded from config, can be overridden)
-- `nexusIqToken`: Nexus IQ authentication token
-- `nexusIqApplicationId`: Nexus IQ application ID (auto-detected from repository name, can be overridden)
-
-### Artifactory Configuration
-- `artifactoryUrl`: Artifactory server URL (auto-loaded from config, can be overridden)
-- `artifactoryRepo`: Artifactory repository name (auto-detected from repository name, can be overridden)
-- `artifactoryUser`: Artifactory username
-- `artifactoryPassword`: Artifactory password
-
-### Git Configuration
-- `gitUser`: Git user name for commits
-- `gitEmail`: Git email for commits
-
-### Pipeline Behavior
-- `enableMutationTests`: Enable mutation testing (default: true)
-- `enableSonarQube`: Enable SonarQube analysis (default: true)
-- `enableNexusIQ`: Enable Nexus IQ scanning (default: true)
-- `enableArtifactory`: Enable Artifactory upload (default: true)
-- `autoVersionBump`: Enable automatic version bumping (default: true)
+Key configuration categories include:
+- **Agent Configuration**: Jenkins agent labels
+- **Python Configuration**: Python version, file paths
+- **Tool Configurations**: Ruff, uv, test commands
+- **Environment Configuration**: Development, staging, production
+- **Integration Configuration**: SonarQube, Nexus IQ, Artifactory
+- **Pipeline Behavior**: Feature toggles and automation settings
 
 ## Testing
 
