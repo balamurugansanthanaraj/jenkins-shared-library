@@ -125,8 +125,20 @@ print(str(new))
         """
         
         // Store the new version in environment for later use
+        // Read the new version from the appropriate source file
+        def versionReadCmd = """
+            source venv/bin/activate
+            if [ -f "${config.versionFile}" ]; then
+                cat ${config.versionFile}
+            elif [ -f "${config.setupFile}" ]; then
+                python -c "import re; print(re.search(r'version=[\"\']([^\"\']+)[\"\']', open('${config.setupFile}').read()).group(1))"
+            else
+                echo ""
+            fi
+        """
+
         script.env.NEW_VERSION = script.sh(
-            script: "source venv/bin/activate && cat ${config.versionFile}",
+            script: versionReadCmd,
             returnStdout: true
         ).trim()
         
